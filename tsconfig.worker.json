@@ -18,5 +18,5 @@
     "src/sse-do.ts",
     "src/shared/types.ts"
   ],
-  "exclude": ["node_modules", "client"]
+  "exclude": ["node_modules"]
 }

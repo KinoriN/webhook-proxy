@@ -1,0 +1,28 @@
+name = "webhook-proxy"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+
+# KV Namespace binding — create your own with: wrangler kv namespace create WEBHOOK_PROXY_KV
+[[kv_namespaces]]
+binding = "WEBHOOK_PROXY_KV"
+id = "<YOUR_KV_NAMESPACE_ID>"
+
+# Durable Object binding
+[durable_objects]
+bindings = [
+  { name = "SSE_MANAGER", class_name = "SSEManager" }
+]
+
+# Custom domain — change to your own domain, or remove to use *.workers.dev only
+routes = [
+  { pattern = "<YOUR_DOMAIN>", custom_domain = true }
+]
+
+# Durable Object migrations — use new_sqlite_classes for free plan
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["SSEManager"]
+
+# Static assets for dashboard SPA (Vite build output)
+[assets]
+directory = "./dist/client"

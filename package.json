@@ -3,25 +3,32 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "wrangler dev",
+    "dev:client": "vite",
+    "dev:full": "concurrently \"pnpm dev:client\" \"pnpm dev\"",
+    "build": "vite build && wrangler deploy",
+    "build:client": "vite build",
+    "build:worker": "tsc -p tsconfig.worker.json --noEmit",
+    "type-check": "tsc -p tsconfig.worker.json --noEmit && tsc -p tsconfig.client.json --noEmit",
     "lint": "biome check",
     "format": "biome format --write"
   },
   "dependencies": {
-    "next": "16.2.4",
+    "@cloudflare/workers-types": "^4.20260424.1",
+    "hono": "^4.12.15",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@tailwindcss/vite": "^4",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "babel-plugin-react-compiler": "1.0.0",
+    "@vitejs/plugin-react-swc": "^4",
+    "concurrently": "^9",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vite": "^6",
+    "wrangler": "^4"
   }
 }

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": ["esnext"],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "module": "esnext",
     "moduleResolution": "bundler",
     "strict": true,
@@ -10,13 +10,11 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "types": ["@cloudflare/workers-types"]
+    "jsx": "react-jsx",
+    "paths": {
+      "@/*": ["./client/src/*"]
+    }
   },
-  "include": [
-    "src/index.ts",
-    "src/kv-store.ts",
-    "src/sse-do.ts",
-    "src/shared/types.ts"
-  ],
-  "exclude": ["node_modules", "client"]
+  "include": ["client/src/**/*.ts", "client/src/**/*.tsx", "vite.config.ts"],
+  "exclude": ["node_modules"]
 }
