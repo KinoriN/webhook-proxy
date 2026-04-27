@@ -13,7 +13,6 @@ import {
   listChannels,
   queryAllEvents,
   registerChannel,
-  sanitizeHeaders,
 } from "./kv-store";
 import type { Env, WebhookChannel } from "./shared/types";
 import { SSEManager } from "./sse-do";
@@ -139,12 +138,11 @@ app.all("/api/webhook/in/:token", async (c) => {
     );
   }
 
-  // Extract headers and redact sensitive fields
-  const rawHeaders: Record<string, string> = {};
+  // Extract headers as-is
+  const headers: Record<string, string> = {};
   c.req.raw.headers.forEach((value, key) => {
-    rawHeaders[key] = value;
+    headers[key] = value;
   });
-  const headers = sanitizeHeaders(rawHeaders);
 
   // Extract query parameters
   const query: Record<string, string> = {};

@@ -13,13 +13,6 @@ import type {
 const TOKEN_LENGTH = 12;
 const MAX_CHANNELS = 100;
 const MAX_EVENTS_PER_CHANNEL = 500;
-const SENSITIVE_HEADERS = [
-  "authorization",
-  "cookie",
-  "x-api-key",
-  "x-token",
-  "x-talesofai-api-key",
-];
 
 // --- KV Key patterns ---
 // channel:{token} → JSON WebhookChannel
@@ -154,21 +147,6 @@ export async function recordChannelEvent(
 }
 
 // --- Event functions ---
-
-/** Sanitize headers — redact sensitive fields */
-export function sanitizeHeaders(
-  headers: Record<string, string>,
-): Record<string, string> {
-  const sanitized: Record<string, string> = {};
-  for (const [key, value] of Object.entries(headers)) {
-    if (SENSITIVE_HEADERS.includes(key.toLowerCase())) {
-      sanitized[key] = "[REDACTED]";
-    } else {
-      sanitized[key] = value;
-    }
-  }
-  return sanitized;
-}
 
 /** Add a webhook event, enforce max 500 per channel */
 export async function addEvent(

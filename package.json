@@ -1,7 +1,11 @@
 {
   "name": "webhook-proxy",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
+  "type": "module",
+  "bin": {
+    "webhook-proxy": "./bin/webhook-proxy.mjs"
+  },
   "scripts": {
     "dev": "wrangler dev",
     "dev:client": "vite",

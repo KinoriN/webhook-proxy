@@ -19,7 +19,7 @@ export interface WebhookEvent {
   channelToken: string; // owning channel token
   channelLabel: string; // channel label for display
   method: string; // HTTP method (POST, PUT, DELETE, PATCH, GET)
-  headers: Record<string, string>; // request headers (sensitive fields redacted)
+  headers: Record<string, string>; // original request headers
   body: unknown; // request body
   query: Record<string, string>; // URL query parameters
   timestamp: number; // received timestamp (ms)
