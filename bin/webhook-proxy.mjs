@@ -268,7 +268,9 @@ async function listen(args) {
   });
 
   if (!response.ok || !response.body) {
-    throw new Error(`SSE connection failed: ${response.status} ${response.statusText}`);
+    throw new Error(
+      `SSE connection failed: ${response.status} ${response.statusText}`,
+    );
   }
 
   const decoder = new TextDecoder();
@@ -281,7 +283,9 @@ async function listen(args) {
         try {
           const payload = JSON.parse(data);
           clientId = payload.clientId ?? null;
-          console.log(`[webhook-proxy] connected (clientId=${clientId ?? "unknown"})`);
+          console.log(
+            `[webhook-proxy] connected (clientId=${clientId ?? "unknown"})`,
+          );
           if (clientId && !pingTimer) {
             pingTimer = setInterval(() => {
               postLifecycle(baseUrl, "/api/webhook/sse-ping", clientId);
@@ -294,7 +298,8 @@ async function listen(args) {
       }
 
       if (event !== "webhook") {
-        if (args.verbose) console.log(`[webhook-proxy] ignored SSE event: ${event}`);
+        if (args.verbose)
+          console.log(`[webhook-proxy] ignored SSE event: ${event}`);
         return;
       }
 
