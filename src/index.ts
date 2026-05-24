@@ -11,7 +11,7 @@ import {
   getChannelByToken,
   getStats,
   listChannels,
-  queryAllEvents,
+  queryEvents,
   registerChannel,
 } from "./kv-store";
 import type { Env, WebhookChannel } from "./shared/types";
@@ -277,7 +277,7 @@ app.post("/api/webhook/sse-cancel", async (c) => {
 
 /**
  * GET /api/webhook/history
- * Query historical webhook events with filters
+ * Query historical webhook events for one channel
  * Query params: channelId, since, until, limit, offset
  */
 app.get("/api/webhook/history", async (c) => {
@@ -292,8 +292,16 @@ app.get("/api/webhook/history", async (c) => {
   );
   const offset = Math.max(Number(c.req.query("offset") ?? "0"), 0);
 
-  const result = await queryAllEvents(kv, {
-    channelId: channelId ?? undefined,
+  if (!channelId) {
+    return c.json({ error: "channelId is required" }, 400);
+  }
+
+  const channel = await getChannelById(kv, channelId);
+  if (!channel) {
+    return c.json({ error: "Channel not found" }, 404);
+  }
+
+  const result = await queryEvents(kv, channel.id, {
     since: since ? Number(since) : undefined,
     until: until ? Number(until) : undefined,
     limit,
