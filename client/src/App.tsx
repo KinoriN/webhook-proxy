@@ -75,7 +75,9 @@ export default function App() {
       setEvents([]);
       return;
     }
-    fetch(`/api/webhook/history?channelId=${selectedChannel.id}&limit=100`)
+    fetch(
+      `/api/webhook/history?token=${encodeURIComponent(selectedChannel.token)}&limit=100`,
+    )
       .then((r) => r.json())
       .then((data) => setEvents(data.events ?? []))
       .catch(() => setEvents([]));

@@ -50,7 +50,7 @@ All API routes are under `/api/webhook`.
 | `GET` | `/stream?channelId=<id>` | SSE stream for real-time events, optionally filtered to a channel. |
 | `POST` | `/sse-ping` | Heartbeat for an SSE client: `{ "clientId": "..." }`. |
 | `POST` | `/sse-cancel` | Explicitly disconnect an SSE client: `{ "clientId": "..." }`. |
-| `GET` | `/history?channelId=<id>&limit=50&offset=0` | Query stored events. Supports `since`, `until`, `limit`, `offset`. |
+| `GET` | `/history?token=<token>&limit=50&offset=0` | Query stored events. Supports `since`, `until`, `limit`, `offset`. |
 | `GET` | `/stats?ids=id1,id2` | Service stats. With `ids`, includes matching channel metadata; without ids, channel list is hidden. |
 
 ## Response Shapes
@@ -77,7 +77,7 @@ Returns HTTP `201`:
   },
   "webhookUrl": "https://webhook.kinori.me/api/webhook/in/wh_...",
   "streamUrl": "https://webhook.kinori.me/api/webhook/stream?channelId=ch_...",
-  "historyUrl": "https://webhook.kinori.me/api/webhook/history?channelId=ch_..."
+  "historyUrl": "https://webhook.kinori.me/api/webhook/history?token=wh_..."
 }
 ```
 
@@ -134,12 +134,13 @@ REGISTER_JSON=$(curl -sS -X POST "$BASE_URL/api/webhook/register" \
   -d '{"label":"agent-webhook-test"}')
 
 CHANNEL_ID=$(printf '%s' "$REGISTER_JSON" | jq -r '.channel.id')
+CHANNEL_TOKEN=$(printf '%s' "$REGISTER_JSON" | jq -r '.channel.token')
 WEBHOOK_URL=$(printf '%s' "$REGISTER_JSON" | jq -r '.webhookUrl')
 STREAM_URL=$(printf '%s' "$REGISTER_JSON" | jq -r '.streamUrl')
 HISTORY_URL=$(printf '%s' "$REGISTER_JSON" | jq -r '.historyUrl')
 
-printf 'CHANNEL_ID=%s\nWEBHOOK_URL=%s\nSTREAM_URL=%s\nHISTORY_URL=%s\n' \
-  "$CHANNEL_ID" "$WEBHOOK_URL" "$STREAM_URL" "$HISTORY_URL"
+printf 'CHANNEL_ID=%s\nCHANNEL_TOKEN=%s\nWEBHOOK_URL=%s\nSTREAM_URL=%s\nHISTORY_URL=%s\n' \
+  "$CHANNEL_ID" "$CHANNEL_TOKEN" "$WEBHOOK_URL" "$STREAM_URL" "$HISTORY_URL"
 ```
 
 ### 2. Send a sample webhook
@@ -154,7 +155,7 @@ curl -sS -X POST "$WEBHOOK_URL?source=manual&case=json" \
 ### 3. Verify history
 
 ```bash
-curl -sS "$BASE_URL/api/webhook/history?channelId=$CHANNEL_ID&limit=10" | jq .
+curl -sS "$BASE_URL/api/webhook/history?token=$CHANNEL_TOKEN&limit=10" | jq .
 ```
 
 Check that the newest event has the expected `method`, `headers`, `body`, and `query`.
@@ -293,6 +294,7 @@ REGISTER_JSON=$(curl -sS -X POST "$BASE_URL/api/webhook/register" \
   -H 'content-type: application/json' \
   -d "{\"label\":\"$LABEL\"}")
 CHANNEL_ID=$(printf '%s' "$REGISTER_JSON" | jq -r '.channel.id')
+CHANNEL_TOKEN=$(printf '%s' "$REGISTER_JSON" | jq -r '.channel.token')
 WEBHOOK_URL=$(printf '%s' "$REGISTER_JSON" | jq -r '.webhookUrl')
 
 curl -sS -X POST "$WEBHOOK_URL?source=smoke" \
@@ -300,7 +302,7 @@ curl -sS -X POST "$WEBHOOK_URL?source=smoke" \
   -H 'x-smoke-test: true' \
   -d '{"event":"smoke.test","ok":true}' | jq .
 
-curl -sS "$BASE_URL/api/webhook/history?channelId=$CHANNEL_ID&limit=1" | jq .
+curl -sS "$BASE_URL/api/webhook/history?token=$CHANNEL_TOKEN&limit=1" | jq .
 printf 'Created channel: %s\nWebhook URL: %s\n' "$CHANNEL_ID" "$WEBHOOK_URL"
 ```
 

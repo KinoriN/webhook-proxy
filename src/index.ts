@@ -67,7 +67,7 @@ app.post("/api/webhook/register", async (c) => {
       },
       webhookUrl,
       streamUrl: `${baseUrl}/api/webhook/stream?channelId=${channel.id}`,
-      historyUrl: `${baseUrl}/api/webhook/history?channelId=${channel.id}`,
+      historyUrl: `${baseUrl}/api/webhook/history?token=${channel.token}`,
     },
     201,
   );
@@ -278,12 +278,12 @@ app.post("/api/webhook/sse-cancel", async (c) => {
 /**
  * GET /api/webhook/history
  * Query historical webhook events for one channel
- * Query params: channelId, since, until, limit, offset
+ * Query params: token, since, until, limit, offset
  */
 app.get("/api/webhook/history", async (c) => {
   const kv = c.env.WEBHOOK_PROXY_KV;
 
-  const channelId = c.req.query("channelId");
+  const token = c.req.query("token");
   const since = c.req.query("since");
   const until = c.req.query("until");
   const limit = Math.min(
@@ -292,11 +292,11 @@ app.get("/api/webhook/history", async (c) => {
   );
   const offset = Math.max(Number(c.req.query("offset") ?? "0"), 0);
 
-  if (!channelId) {
-    return c.json({ error: "channelId is required" }, 400);
+  if (!token) {
+    return c.json({ error: "token is required" }, 400);
   }
 
-  const channel = await getChannelById(kv, channelId);
+  const channel = await getChannelByToken(kv, token);
   if (!channel) {
     return c.json({ error: "Channel not found" }, 404);
   }

@@ -143,7 +143,7 @@ curl https://your-domain/api/webhook/channel/ch_xxx
 ### Event History
 
 ```bash
-curl "https://your-domain/api/webhook/history?channelId=ch_xxx&limit=50"
+curl "https://your-domain/api/webhook/history?token=wh_xxx&limit=50"
 ```
 
 ### SSE Stream

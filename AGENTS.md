@@ -61,7 +61,7 @@ All routes under `/api/webhook/`:
 - `GET /stream` — SSE endpoint, optional `?channelId=` filter
 - `POST /sse-ping` — Client heartbeat ping (proves SSE client is alive)
 - `POST /sse-cancel` — Explicit client disconnect
-- `GET /history` — Query events, params: channelId, since, until, limit, offset
+- `GET /history` — Query events, params: token, since, until, limit, offset
 - `GET /stats` — Aggregate stats (store + SSE + channels)
 
 ## KV Key Patterns
