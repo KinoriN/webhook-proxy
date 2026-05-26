@@ -199,15 +199,10 @@ app.all("/api/webhook/in/:token", async (c) => {
     }),
   );
 
-  return c.json(
-    {
-      received: true,
-      id: event.id,
-      channel: channel.label,
-      timestamp: event.timestamp,
-    },
-    200,
-  );
+  return new Response(JSON.stringify({ message: "success" }), {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+  });
 });
 
 /**

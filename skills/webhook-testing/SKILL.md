@@ -87,10 +87,7 @@ A valid request to `/in/:token` returns HTTP `200`:
 
 ```json
 {
-  "received": true,
-  "id": "evt_...",
-  "channel": "my-webhook-test",
-  "timestamp": 1770000000000
+  "message": "success"
 }
 ```
 
